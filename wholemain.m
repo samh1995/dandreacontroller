@@ -10,7 +10,7 @@ initequil;
     desiredstate=[0 0 0 0 0 0 0 1 10 0 0 0];
    
     endTime = 2;  % seconds
-    dt = 1 / 50; % time step (Hz)
+    dt = 1 / 200; % time step (Hz)
 t=0;
     %initialconditions=[iC(1);iC(2)-5.69;iC(3);iC(4)-0.289];
     %initialconditions=[11;2;0.95;0.3];
@@ -31,13 +31,13 @@ cos(state(2))*sin(state(3)) sin(state(3))*sin(state(2))*sin(state(1))+cos(state(
 
 
 
-    f_total=m/nbar(3)*norm(desired_accl-[0;0;g])
-    n_desired=m/nbar(3)*inv(R)*(desired_accl-[0;0;g])/f_total;
+    f_total=norm(m/nbar(3)*(desired_accl-[0;0;-g]))
+    n_desired=m/nbar(3)*inv(R)*(desired_accl-[0;0;-g])/norm(m/nbar(3)*(desired_accl-[0;0;-g]))
     
     %%LQR
     [A,B,K]=SSsystem(); %finds K for LQR system
-    s=[state(4)-wbar(1);state(5)-wbar(2);n_desired(1)-nbar(1);n_desired(2)-nbar(2)];
-    u=-K*s;
+    s=[state(4)-wbbar(1);state(5)-wbbar(2);n_desired(1)-nbar(1);n_desired(2)-nbar(2)]
+    u=-K*s
    % f = fsolve(@(x) forces(x,u,f_total), f);
     f=forces(u);
     options = odeset('RelTol',1e-3); %%tolerance
