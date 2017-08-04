@@ -3,47 +3,53 @@ clc;
 initparams;
 initequil;
     global g m IB Izzp IT l Dt Kf Kt  damping_ratio nat_freq 
-    
     global  wbar fbar wbbar nbar K
-    state=[0 0 0 2 1 10 0 0 10 0 0 0]';
+    
+  %% Initial Conditions
+    state=[0 0 0 0 0 10 0 0 10 0 0 0]';
     f=[3 0 3 0]';
-    desiredstate=[0 0 0 0 0 0 0 1 10 0 0 0];
-   
-    endTime = 2;  % seconds
-    dt = 1 / 200; % time step (Hz)
-t=0;
-    %initialconditions=[iC(1);iC(2)-5.69;iC(3);iC(4)-0.289];
-    %initialconditions=[11;2;0.95;0.3];
+    desiredstate=[0 0 0 0 0 10 0 1 15 0 0 0];
 
+    endTime = 10;  % seconds
+    dt = 1 / 200; % time step (Hz)
+    t=0;
+    
     Hist = inithist(state,t,f,desiredstate);
     W=1;
 
-for i = 0 : dt : endTime - dt
+        
+    %% LQR
+    [A,B,K]=SSsystem(); %finds K for LQR system
     
+%     C=[0 0 0 0];D=[0 0];
+%     P=pole(idss(A-B*K, B,C,D))
+for i = 0 : dt : endTime - dt
+    % Rotational Matrix 
+    R=[cos(state(2))*cos(state(3)) cos(state(3))*sin(state(2))*sin(state(1))-cos(state(1))*sin(state(3)) cos(state(3))*cos(state(1))*sin(state(2))+sin(state(1))*sin(state(3));
+    cos(state(2))*sin(state(3)) sin(state(3))*sin(state(2))*sin(state(1))+cos(state(1))*cos(state(3)) sin(state(3))*cos(state(1))*sin(state(2))-sin(state(1))*cos(state(3));
+    -sin(state(2)) cos(state(2))*sin(state(1)) cos(state(1))*cos(state(2))];
+
+%% Outer position Controller
     errouter_d =[state(7)-desiredstate(7);state(8)-desiredstate(8);state(9)-desiredstate(9)];
     errouter_d_dot=[state(10)-desiredstate(10);state(11)-desiredstate(11);state(12)-desiredstate(12)];
     desired_accl=-2*damping_ratio*nat_freq*errouter_d_dot-(nat_freq)^2*errouter_d ;
     
-    %% Rotational Matrix 
-R=[cos(state(2))*cos(state(3)) cos(state(3))*sin(state(2))*sin(state(1))-cos(state(1))*sin(state(3)) cos(state(3))*cos(state(1))*sin(state(2))+sin(state(1))*sin(state(3));
-cos(state(2))*sin(state(3)) sin(state(3))*sin(state(2))*sin(state(1))+cos(state(1))*cos(state(3)) sin(state(3))*cos(state(1))*sin(state(2))-sin(state(1))*cos(state(3));
--sin(state(2)) cos(state(2))*sin(state(1)) cos(state(1))*cos(state(2))];
 
-
-
+    % Computing n desired (eq45-46)
     f_total=norm(m/nbar(3)*(desired_accl-[0;0;-g]))
     n_desired=m/nbar(3)*inv(R)*(desired_accl-[0;0;-g])/norm(m/nbar(3)*(desired_accl-[0;0;-g]))
-    
-    %%LQR
-    [A,B,K]=SSsystem(); %finds K for LQR system
+
     s=[state(4)-wbbar(1);state(5)-wbbar(2);n_desired(1)-nbar(1);n_desired(2)-nbar(2)]
     u=-K*s
+
+   %% Computing desired thrusts 
    % f = fsolve(@(x) forces(x,u,f_total), f);
-    f=forces(u);
-    options = odeset('RelTol',1e-3); %%tolerance
-   % [tODE,y] = ode45(@(tODE, y) sys( y, A,B,K,tODE, dt),[i i+dt], initialconditions, options);
-     [t1ODE,stateODE]= ode45(@(t1ODE,stateODE) dynamicsysteme(t1ODE, stateODE, dt, f),[i i+dt],state,options);
-     state=stateODE(end,:)';
+    f=forces(u,f_total);
+    
+    % Propagate dynamics.
+    options = odeset('RelTol',1e-3); %tolerance   
+    [t1ODE,stateODE]= ode45(@(t1ODE,stateODE) dynamicsysteme(t1ODE, stateODE, dt, f),[i i+dt],state,options);
+    state=stateODE(end,:)';
      t = t1ODE(end,:)- dt;
      
     Hist = updatehist(Hist, t, state, f);
@@ -53,7 +59,7 @@ cos(state(2))*sin(state(3)) sin(state(3))*sin(state(2))*sin(state(1))+cos(state(
    %y(i,:)=y(i,:)-transpose(initialconditions); 
   
 end
-
+%%
 figure(1)
     plot(Hist.times,Hist.states(1,:))
     title('Roll value vs time (rads vs secs)')
@@ -131,8 +137,8 @@ figure(12)
 figure(13)
   plot(Hist.times,Hist.f(1,:));hold on;
   plot(Hist.times,Hist.f(3,:));hold on;
-  plot(Hist.times,Hist.f(2,:)); hold on
-  plot(Hist.times,Hist.f(4,:))
+  plot(Hist.times,Hist.f(2,:));
+
   xlabel('t(s)')
   ylabel('fi(N)')
   title('4 propeller forces vs time ')

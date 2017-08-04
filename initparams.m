@@ -7,16 +7,16 @@ function []= initparams()
     m = 0.5;  % mass (kg) 
     
     % inertial properties of all vehicle
-    IxxT=0.0032;
-    IyyT=0.0032;
-    IzzT=0.0055;
+    IxxT=0.0027;
+    IyyT=0.0027;
+    IzzT=0.005215;
     
     % inertial properties of one propeller
     Izzp=1.5*10^-5;
     % inertial properties in body frame
-    Ixx = 0.0032;
-    Iyy = 0.0032;
-    Izz = IzzT-4*Izzp;
+    Ixx = 0.0027;
+    Iyy = 0.0027;
+    Izz = 0.0052;
     
     Ixy = 0;
     Iyz = 0;
@@ -35,7 +35,7 @@ function []= initparams()
     %PROP_POSNS = [p1, p2, p3, p4] - repmat(CoM,1,4);
     l=0.17; %distance of prop to cog
     Kf = 6.41*10^-6; % Thrust coefficient
-    Kt = 1.69*10^-2; % torq coefficient
+    Kt = 1.1*10^-7; % torq coefficient
     Dt= 2.75*10^-3; % drag coeffient
 %     u2RpmMat = inv([-Kt                   -Kt                   -Kt                   -Kt;              
 %                     -Kt*PROP_POSNS(2,1) -Kt*PROP_POSNS(2,2) -Kt*PROP_POSNS(2,3) -Kt*PROP_POSNS(2,4);
