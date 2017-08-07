@@ -6,9 +6,9 @@ initequil;
     global  wbar fbar wbbar nbar K
     
   %% Initial Conditions
-    state=[0.133899759 0 0 0 2.4579 18.2494 0 0 5 0 0 0 ]';
-    f=fbar;s
-    desiredstate=[0.133899759 0 0 0 2.4579 18.2494 0 0 5 0 0 0 ]';
+    state=[0.1347 0 0 0 2.4579 18.2494 0 0 5 0 0 0 ]';
+    f=[fbar(1)fbar(2)fbar(3) 0]';
+    desiredstate=[0.1347 0 0 0 2.4579 18.2494 0 0 5 0 0 0 ]';
 
     endTime = 0;  % seconds
     dt = 1 / 200; % time step (Hz)

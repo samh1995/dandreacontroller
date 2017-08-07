@@ -35,7 +35,7 @@ function []= initparams()
     %PROP_POSNS = [p1, p2, p3, p4] - repmat(CoM,1,4);
     l=0.17; %distance of prop to cog
     Kf = 6.41*10^-6; % Thrust coefficient
-    Kt = 1.1*10^-7; % torq coefficient
+    Kt = 1.69*10^-2; % torq coefficient
     Dt= 2.75*10^-3; % drag coeffient
 %     u2RpmMat = inv([-Kt                   -Kt                   -Kt                   -Kt;              
 %                     -Kt*PROP_POSNS(2,1) -Kt*PROP_POSNS(2,2) -Kt*PROP_POSNS(2,3) -Kt*PROP_POSNS(2,4);
