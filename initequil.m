@@ -2,7 +2,7 @@ function []= initequil()
 initparams;
     global fbar wbar Kf  nbar wbbar Rps
      wbar(1)= 555.7408;
-     wbar(3)=555.7408
+     wbar(3)=555.7408;
      wbar(2)=392.9681;
 fbar=[(wbar(1))^2*Kf (wbar(2))^2*Kf (wbar(3))^2*Kf 0]';
 
