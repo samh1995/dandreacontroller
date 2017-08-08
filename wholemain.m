@@ -1,16 +1,17 @@
 clear all;
 clc;
+close all
 initparams;
 initequil;
     global g m IB Izzp IT l Dt Kf Kt  damping_ratio nat_freq 
     global  wbar fbar wbbar nbar K
     
   %% Initial Conditions
-    state=[0 0 0 0 2.4579 18.2494 0 0 5 0 0 0 ]';
+    state=[0.133899759 0 0 0 2.4579 18.2494 0 0 5 0 0 0 ]';
     f=fbar;
-    desiredstate=[0.1338997y59 0 0 0 2.4579 18.2494 0 1 6 0 0 0 ]';
+    desiredstate=[0.133899759 0 0 0 2.4579 18.2494 0 1 6 0 0 0 ]';
 
-    endTime = 3;  % seconds
+    endTime = 10;  % seconds
     dt = 1 / 200; % time step (Hz)
     t=0;
     
@@ -170,14 +171,18 @@ figure(13)
   ylabel('fi(N)')
   title('4 propeller forces vs time ')
   %saveas(figure (13),'Propellers.jpg')
-
-% figure(14)
-%  plot(Hist.times,Hist.f(4,:)) 
-%  title('Propeller 4 vs time')
-%  xlabel('t(s)')
-%  ylabel('f4(N)')
- %saveas(figure (14),'Propellerf4.jpg')
- 
+%%
+figure(14)
+    plot(Hist.times,Hist.states(4,:)); hold on
+    plot(Hist.times,0*ones(size(Hist.times))); hold on  
+    plot(Hist.times,Hist.states(5,:)); hold on
+    plot(Hist.times,2.4579*ones(size(Hist.times))); hold on
+    plot(Hist.times,Hist.states(6,:)); hold on
+    plot(Hist.times,18.2494*ones(size(Hist.times)));
+    title('omega (pqr) vs time (rads/s vs secs)')
+    xlabel('t(s)')
+    ylabel('r (rads/s)')
+   % saveas(figure (6),'state6.jpg')
  
  %% Visualize simulation.
-simvisualization(Hist.times, Hist.states, 'V1');
+%simvisualization(Hist.times, Hist.states, 'V1');

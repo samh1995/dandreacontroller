@@ -14,6 +14,7 @@ Rps=8;
 %  for i=1:4
 %      fbar(i)=Kf*wbar(i)^2;
 %  end
+%  fbar=fbar';
 %  wbbar=[0.2;4.3;19.5];
 %  nbar=[0.01;0.2155;0.97744];
 % Rps=6; 
