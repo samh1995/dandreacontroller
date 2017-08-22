@@ -8,11 +8,11 @@ initequil;
     
   %% Initial Conditions
 %     state=[0.133899759 0 0 0 2.4579 18.2494 0 0 5 0 0 0 ]';
- state=[0 0 0 0 0 0 0 0 1 0 0 0 ]';
+ state=[0.314 0.314 0 0 0 0 0 0 1 0 0 0 ]';
     f=[1.25 1.25 1.25 0]';
-    desiredstate=[0.133899759 0 0 0 0 0 4 5 8 0 0 0 ]';
+    desiredstate=[0.133899759 0 0 0 0 0 0 5 1 0 0 0 ]';
 
-    endTime = 30;  % seconds
+    endTime = 5;  % seconds
     dt = 1 / 200; % time step (Hz)
     t=0;
     
@@ -177,7 +177,7 @@ figure(13)
 figure(14)
     plot(Hist.times,Hist.states(4,:)); hold on
     plot(Hist.times,Hist.states(5,:)); hold on
-    
+    p;
     plot(Hist.times,Hist.states(6,:));
 
     title('omega (pqr) vs time (rads/s vs secs)')
