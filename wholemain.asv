@@ -17,14 +17,14 @@ initequil; %%change equil to fit ur new state!!!
   % old state=[ euler angles p q r x y z xdo ydot zdot]
   % new state (u,v,w,p,q,r,X,Y,Z,q0,q1,q2,q3) uvw in body fram
 %     state=[0.133899759 0 0 0 2.4579 18.2494 0 0 5 0 0 0 ]';
- yaw = 0; 
- pitch = 0.3; 
- roll = 0;
- q0 = angle2quat( yaw, pitch, roll )
+ attEuler=[1; 0.3 ;0] %roll pitch yaw xyz                    zyx
+% q0 = angle2quat(-(attEuler(1)+pi),attEuler(2),attEuler(3),'xyz')'
+ q0 = angle2quat( 0, 0.3 ,1,'ZYX')
+%  rotmat0=quat2rotm(q0)
  state=[0 0 0 0 0 0 0 0 1 q0]';
     f=[1.25 1.25 1.25 0]';
     %desired state (u,v,w,p,q,r,X,Y,Z,q0,q1,q2,q3) uvw in body frame
-    desiredstate=[0 0 0 0 0 0 1 1 2 q0]';
+    desiredstate=[0 0 0 0 0 0 1 1 2 1 0 0 0]';
 
 
     endTime = 5;  % seconds
@@ -47,10 +47,11 @@ for i = 0 : dt : endTime - dt
 %     -sin(state(2)) cos(state(2))*sin(state(1)) cos(state(1))*cos(state(2))];
 %% State Initialization
 q = [state(10);state(11);state(12);state(13)]/norm(state(10:13));
-rotMat = quat2rotmat(q);
+rotMat = quat2rotm(q')
+
 %state = reshape(state,[max(size(state)),1]); %make sure state is column vector
-Vinertial(1:3) = rotMat'*state(1:3)
-desiredVinertial(1:3) = rotMat'*desiredstate(1:3)
+Vinertial(1:3) = rotMat*state(1:3)
+desiredVinertial(1:3) = rotMat*desiredstate(1:3)
 %% Outer position Controller
     errouter_d =[state(7)-desiredstate(7);state(8)-desiredstate(8);state(9)-desiredstate(9)]
     errouter_d_dot=[Vinertial(1)-desiredVinertial(1);Vinertial(2)-desiredVinertial(2);Vinertial(3)-desiredVinertial(3)]
@@ -65,11 +66,11 @@ desiredVinertial(1:3) = rotMat'*desiredstate(1:3)
     u=-K*s
 
    %% Computing desired thrusts 
-   % f = fsolve(@(x) forces(x,u,f_total), f);
+   % f = fsolve(@(x) forces(0*,u,f_total), f);
     f=forces(u,f_total)
     
     % Propagate dynamics.
-    options = odeset('RelTol',1e-3); %tolerance   
+    options = odeset('RelTol',1e-3); %t4olerance   
     [t1ODE,stateODE]= ode45(@(t1ODE,stateODE) dynamicsysteme(t1ODE, stateODE, f,desiredstate),[i i+dt],state,options);
     %statederiv=dynamicsysteme(0, state,f,desiredstate)
 
