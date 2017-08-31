@@ -4,7 +4,9 @@ function [Hist] = inithist(state,t,f,desiredstate)
     %Hist.stateDerivs = stateDeriv;
     Hist.times = t;
  Hist.f = f;
+
  Hist.desiredstate=desiredstate;
+ 
     % Initialize history of twist, pose and control structs
    % Hist.u = u;
     
