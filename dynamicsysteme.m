@@ -8,7 +8,8 @@ function [stateDeriv]= dynamicsysteme(t, state, f,desirestate)
 global g m IB Izzp IT l Dt Kf Kt  damping_ratio nat_freq  
 global  wbar fbar wbbar nbar K
 q = [state(10);state(11);state(12);state(13)]/norm(state(10:13));
-rotMat = quat2rotmat(q); %% from inertal to bdy
+R = quat2rotmat(q) %% from body to inertial
+state = reshape(state,[max(size(state)),1]);
 stateDeriv = zeros(13,1);
 
 % %% Rotational Matrix 
@@ -34,7 +35,7 @@ for j=1:3
 end
 w(4)=0;
 f(4)=0;
-fGravity = rotMat*[0; 0; -m*g];                 % force of gravity, inertial fram
+fGravity = R'*[0; 0; -m*g];                 % force of gravity, inertial fram
 fThrust = [0; 0; Kf*sum(w.^2)];   % force of thrust, expressed in inertial frame
 
 stateDeriv(1:3) = (fGravity  +fThrust - m*cross(state(4:6),state(1:3)))/m;
@@ -42,10 +43,9 @@ stateDeriv(4)=(1/IB(1,1))*((f(2))*l-state(5)*state(6)*(IT(3,3)-IT(1,1))-Izzp*sta
 stateDeriv(5)=(1/IB(1,1))*((f(3)-f(1))*l+state(4)*state(6)*(IT(3,3)-IT(1,1))+Izzp*state(4)*(sqrt(abs(f(1))/Kf) +sqrt(abs(f(2))/Kf) +sqrt(abs(f(3))/Kf)+ sqrt(abs(f(4))/Kf)));
 stateDeriv(6)=(1/IB(3,3))*(-Dt*state(6)+Kt*(f(1)-f(2)+f(3)-f(4)));
 
-% stateDeriv(7)=state(10);
 % stateDeriv(8)=state(11);
 % stateDeriv(9)=state(12);
-stateDeriv(7:9)=rotMat'*state(1:3);
+stateDeriv(7:9)=R*state(1:3);
 stateDeriv(10:13) = -0.5*quatmultiply([0;state(4:6)],q);
 
 % stateDeriv(10)=((cos(state(1))*cos(state(3))*sin(state(2))+sin(state(1))*sin(state(3)))/m)*(f(1)+f(2)+f(3)+f(4));
