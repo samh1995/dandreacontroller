@@ -8,7 +8,7 @@ function [stateDeriv]= dynamicsysteme(t, state, f,desirestate)
 global g m IB Izzp IT l Dt Kf Kt  damping_ratio nat_freq  
 global  wbar fbar wbbar nbar K
 q = [state(10);state(11);state(12);state(13)]/norm(state(10:13));
-R = quat2rotmat(q) %% from body to inertial
+R = quat2rotmat(q); %% from body to inertial
 state = reshape(state,[max(size(state)),1]);
 stateDeriv = zeros(13,1);
 

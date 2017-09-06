@@ -18,7 +18,7 @@ initequil; %%change equil to fit ur new state!!!
   % old state=[ euler angles p q r x y z xdo ydot zdot]
   % new state (u,v,w,p,q,r,X,Y,Z,q0,q1,q2,q3) uvw in body fram
 %     state=[0.133899759 0 0 0 2.4579 18.2494 0 0 5 0 0 0 ]';
- euler=[0.5;0.5;1] %roll pitch yaw xyz                    zyx
+ euler=[0.5;0.2;1] %roll pitch yaw xyz                    zyx
 % q0 = angle2quat(-(attEuler(1)+pi),attEuler(2),attEuler(3),'xyz')'
  q0 = angle2quat(euler(3),euler(2),euler(1),'ZYX')
 % rotmat0=quat2rotm(q0)
@@ -30,7 +30,7 @@ initequil; %%change equil to fit ur new state!!!
 % % 
 %  endTime =10;  % seconds
    dt = 1 / 200; % time step (Hz)
-%   t=0;
+  t=0;
 %     
 % Hist = inithist(state,t,f,desiredstate);
 %    W=1;
@@ -49,7 +49,7 @@ initequil; %%change equil to fit ur new state!!!
 %% State Initialization
 q = [state(10);state(11);state(12);state(13)]/norm(state(10:13));
 R = quat2rotmat(q) %% from body to inertial
-rotMat=R' %inertial to body 
+% rotMat=R' %inertial to body 
 %state = reshape(state,[max(size(state)),1]); %make sure state is column vector
 Vinertial(1:3) = R*state(1:3) %R takes from body to inertial states 1:3 which arein body
 desiredVinertial(1:3) = R*desiredstate(1:3)
@@ -71,11 +71,16 @@ desiredVinertial(1:3) = R*desiredstate(1:3)
     f=forces(u,f_total)
     
     % Propagate dynamics.
-   options = odeset('RelTol',1e-3); %tolerance   
+   options = odeset('RelTol',1e-15); %tolerance   
 [t1ODE,stateODE]= ode45(@(t1ODE,stateODE) dynamicsysteme(t1ODE, stateODE, f,desiredstate),[i i+dt],state,options);
-    statederiv=dynamicsysteme(0, state,f,desiredstate)
-accelinertialframe=R*(statederiv(1:3)+cross(state(4:6),state(1:3)))
 state=stateODE(end,:)'
+   
+    q = [state(10);state(11);state(12);state(13)]/norm(state(10:13));
+
+    R = quat2rotmat(q)
+     statederiv=dynamicsysteme(0, state,f,desiredstate)
+accelinertialframe=R*(statederiv(1:3)+cross(state(4:6),state(1:3)))
+
 % t = t1ODE(end,:)- dt;
  
 
