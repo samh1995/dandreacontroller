@@ -35,18 +35,22 @@ for j=1:3
 end
 w(4)=0;
 f(4)=0;
-fGravity = R'*[0; 0; -m*g];                 % force of gravity, inertial fram
-fThrust = [0; 0; Kf*sum(w.^2)];   % force of thrust, expressed in inertial frame
+% fGravity = inv(R)*[0; 0; -m*g];                 % force of gravity, inertial fram
+% fThrust = [0; 0; Kf*sum(w.^2)];   % force of thrust, expressed in inertial frame
+fThrust = R*[0; 0; Kf*sum(w.^2)];
 
-stateDeriv(1:3) = (fGravity  +fThrust - m*cross(state(4:6),state(1:3)))/m;
+fGravity = [0; 0; -m*g];   
+% stateDeriv(1:3) = (fGravity  +fThrust - m*cross(state(4:6),state(1:3)))/m;
+stateDeriv(1:3) = (fGravity  +fThrust)/m;
 stateDeriv(4)=(1/IB(1,1))*((f(2))*l-state(5)*state(6)*(IT(3,3)-IT(1,1))-Izzp*state(5)*(sqrt(abs(f(1))/Kf) +sqrt(abs(f(2))/Kf) +sqrt(abs(f(3))/Kf)+ sqrt(abs(f(4))/Kf) ));
 stateDeriv(5)=(1/IB(1,1))*((f(3)-f(1))*l+state(4)*state(6)*(IT(3,3)-IT(1,1))+Izzp*state(4)*(sqrt(abs(f(1))/Kf) +sqrt(abs(f(2))/Kf) +sqrt(abs(f(3))/Kf)+ sqrt(abs(f(4))/Kf)));
 stateDeriv(6)=(1/IB(3,3))*(-Dt*state(6)+Kt*(f(1)-f(2)+f(3)-f(4)));
 
 % stateDeriv(8)=state(11);
 % stateDeriv(9)=state(12);
-stateDeriv(7:9)=R*state(1:3);
-stateDeriv(10:13) = -0.5*quatmultiply([0;state(4:6)],q);
+stateDeriv(7:9)=state(1:3);
+% stateDeriv(10:13) = -0.5*quatmultiply([0;state(4:6)],q);
+stateDeriv(10:13) = 0.5*quatmultiply(q,[0;state(4:6)]);
 
 % stateDeriv(10)=((cos(state(1))*cos(state(3))*sin(state(2))+sin(state(1))*sin(state(3)))/m)*(f(1)+f(2)+f(3)+f(4));
 % stateDeriv(11)=((cos(state(1))*sin(state(3))*sin(state(2))-sin(state(1))*cos(state(3)))/m)*(f(1)+f(2)+f(3)+f(4));
