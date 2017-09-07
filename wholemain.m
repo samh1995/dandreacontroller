@@ -52,12 +52,12 @@ q = [state(10);state(11);state(12);state(13)]/norm(state(10:13));
 % %  R=inv(Rot)%  body to inertial 
 R=quat2rotmat(q); %% from body to inertial
 state = reshape(state,[max(size(state)),1]); %make sure state is column vector
-% Vinertial(1:3) = R*state(1:3) %R takes from body to inertial states 1:3 which arein body
-% desiredVinertial(1:3) = R*desiredstate(1:3)
+Vinertial(1:3) = R*state(1:3) %R takes from body to inertial states 1:3 which arein body
+desiredVinertial(1:3) = R*desiredstate(1:3)
 %% Outer position Controller
     errouter_d =[state(7)-desiredstate(7);state(8)-desiredstate(8);state(9)-desiredstate(9)];
-     errouter_d_dot=[state(1)-desiredstate(1);state(2)-desiredstate(2);state(3)-desiredstate(3)];
-%     errouter_d_dot=[Vinertial(1)-desiredVinertial(1);Vinertial(2)-desiredVinertial(2);Vinertial(3)-desiredVinertial(3)]
+%      errouter_d_dot=[state(1)-desiredstate(1);state(2)-desiredstate(2);state(3)-desiredstate(3)];
+    errouter_d_dot=[Vinertial(1)-desiredVinertial(1);Vinertial(2)-desiredVinertial(2);Vinertial(3)-desiredVinertial(3)]
     desired_accl=-2*damping_ratio*nat_freq*errouter_d_dot-(nat_freq)^2*errouter_d 
     
 
