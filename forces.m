@@ -14,13 +14,13 @@ initequil;
 %     f(2)= -x(2) + u(2)+fbar(2);
 %     f(3)=f_total-x(1) -x(2) -x(3) ;
 x=linsolve(G,H);
-for j=1:3
-    if x(j)>3.8
-       x(j)=3.8;
-    end
-   if x(j)<0.2
-       x(j)=0.2;
-   end
-end
+% for j=1:3
+%     if x(j)>3.8
+%        x(j)=3.8;
+%     end
+%    if x(j)<0.2
+%        x(j)=0.2;
+%    end
+% end
 x(4)=0;
 end

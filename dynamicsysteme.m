@@ -17,16 +17,15 @@ stateDeriv = zeros(13,1);
 %making sure the forces for the 4 propellers are acceptable 
 j=1;
 for j=1:3
-    if f(j)>3.8
-       f(j)=3.8;
-    end
-   if f(j)<0.2
-       f(j)=0.2;
-   end
+%     if f(j)>3.8
+%        f(j)=3.8;
+%     end
+%    if f(j)<0.2
+%        f(j)=0.2;
+%    end
    w(j)=sqrt(abs(f(j))/Kf) ;
-w
 end
-W=[0;0;sum(w)];
+J=[0;0;sum(w)];
 w(4)=0;
 f(4)=0;
 
@@ -40,7 +39,7 @@ M=[ (f(2)-f(4))*l;  (f(3)-f(1))*l;Kt*(f(1)-f(2)+f(3)-f(4))-Dt*state(6)];
 
 
 stateDeriv(1:3) = (fGravity  +fThrust - m*cross(state(4:6),state(1:3)))/m;
-stateDeriv(4:6) = inv(IB)*(M-cross(state(4:6),IB*state(4:6)+IP*(state(4:6)+W)));
+stateDeriv(4:6) = inv(IB)*(M-cross(state(4:6),IB*state(4:6)+IP*(state(4:6)+J)));
 stateDeriv(7:9)=R*state(1:3);
 stateDeriv(10:13) = 0.5*quatmultiply(q,[0;state(4:6)]);
 
